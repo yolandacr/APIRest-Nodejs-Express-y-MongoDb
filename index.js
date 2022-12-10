@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var app = require('./app');
 var port = process.env.PORT || 3999;
 
+mongoose.set('strictQuery', false);
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://127.0.0.1:27017/api_rest_node', { useNewUrlParser: true })
 		.then(() => {
