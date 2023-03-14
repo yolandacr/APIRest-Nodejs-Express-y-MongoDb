@@ -7,11 +7,8 @@ var Topic = require('../models/topic');
 var controller = {
     add: function(req,res){
         //Recoger el id del topic de la url
-        console.log(req);
         var topicId = req.params.id;
         
-
-        console.log(topicId);
 
         //Find por la id del topic
         Topic.findById(topicId).exec((err, topic) => {
@@ -42,7 +39,6 @@ var controller = {
                 }
 
                 if(validate_content){
-                    console.log(req.user);
                     var comment = {
                         user: req.user,
                         content: req.body.content
