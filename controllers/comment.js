@@ -78,9 +78,56 @@ var controller = {
     },
 
     update: function(req,res){
-        return res.status(200).send({
-            message: "Método de edición de un comentario"
-        });
+        //Conseguir id de comentario que llega por la id
+        var commentId = req.params.id;
+        
+
+        //Recoger datos y validar
+        var params = req.body;
+      
+
+        //Validar los datos
+        try{
+            var validate_content = !validator.isEmpty(params.content);
+            
+            if(validate_content){
+                //Find and update
+                Topic.findOneAndUpdate(
+                    { "comments._id": commentId },
+                    { "$set":{
+                        "comments.$.content": params.content
+                        } 
+                    },
+                    {new:true},
+                    (err,topicUpdated) => {
+                        if(err){
+                            return res.status(500).send({
+                                status: 'error',
+                                message: "Error en la petición"
+                            });
+                        }
+            
+                        if(!topicUpdated){
+                            return res.status(404).send({
+                                status: 'error',
+                                message: "No existe el tema",
+                                topicId
+                            });
+                        }
+                        //Devolver datos
+                        return res.status(200).send({
+                            status: "success",
+                            topic: topicUpdated
+                        });
+                    });
+            }
+        }catch(err){
+            return res.status(200).send({
+                message: 'No has comentado nada'
+            });
+        }
+
+       
     },
 
     delete: function(req,res){
