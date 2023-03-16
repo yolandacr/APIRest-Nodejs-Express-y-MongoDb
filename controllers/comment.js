@@ -111,7 +111,7 @@ var controller = {
                             return res.status(404).send({
                                 status: 'error',
                                 message: "No existe el tema",
-                                topicId
+                                commentId
                             });
                         }
                         //Devolver datos
@@ -131,8 +131,55 @@ var controller = {
     },
 
     delete: function(req,res){
-        return res.status(200).send({
-            message: "Método de borrado comentarios"
+        //Sacar el id del topic y del comentario a borrar
+        var topicId = req.params.topicId;
+        var commentId = req.params.commentId;
+
+        //Buscar el topic
+        Topic.findById(topicId,(err,topic)=>{
+            if(err){
+                return res.status(500).send({
+                    status: 'error',
+                    message: "Error en la petición"
+                });
+            }
+
+            if(!topic){
+                return res.status(404).send({
+                    status: 'error',
+                    message: "No existe el tema",
+                    topicId
+                });
+            }
+            //Seleccionar el subdocumento(comentario)
+            var comment = topic.comments.id(commentId);
+
+            //Borrar el comentario
+            if(comment){
+                comment.remove();
+                //Guardar el topic
+                topic.save((err)=>{
+                    if(err){
+                        return res.status(500).send({
+                            status: 'error',
+                            message: "Error en la petición"
+                        });
+                    }
+                    //Devolver un resultado
+                    return res.status(200).send({
+                        status: "success",
+                        topic
+                    });
+                });
+               
+            }else{
+                return res.status(404).send({
+                    status: 'error',
+                    message: "No existe el comentario",
+                    topicId
+                });
+            }
+            
         });
     }
 

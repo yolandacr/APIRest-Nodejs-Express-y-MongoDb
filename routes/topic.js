@@ -13,6 +13,7 @@ router.get('/user-topics/:user', TopicController.getTopicsByUser);
 router.get('/topic/:id', TopicController.getTopic);
 router.put('/topic/:id', md_auth.authenticated, TopicController.update);
 router.delete('/topic/:id', md_auth.authenticated, TopicController.delete);
+router.get('/search/:search', TopicController.search);
 
 
 module.exports= router;
